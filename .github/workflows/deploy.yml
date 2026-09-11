@@ -44,11 +44,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Deploy with Docker Compose
+      - name: Set image for Docker Compose
         env:
           DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
         run: |
-          export IMAGE="$DOCKERHUB_USER/app:$GITHUB_SHA"
+          echo "IMAGE=$DOCKERHUB_USER/app:$GITHUB_SHA" > .env
+          cat .env
+
+      - name: Deploy with Docker Compose
+        run: |
           docker compose pull
           docker compose up -d
           sleep 5
