@@ -1,9 +1,16 @@
-services:
-  app:
-    image: ${IMAGE:-app:local}
-    build: .
-    ports:
-      - "8080:8080"
-    environment:
-      - PORT=8080
-    restart: unless-stopped
+deploy:
+  needs: build
+  runs-on: ubuntu-latest
+
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy with Docker Compose
+      env:
+        IMAGE: ${{ secrets.DOCKERHUB_USER }}/app:${{ github.sha }}
+      run: |
+        docker compose pull
+        docker compose up -d
+        sleep 5
+        curl -f http://localhost:8080/health
