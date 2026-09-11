@@ -46,8 +46,9 @@ jobs:
 
       - name: Deploy with Docker Compose
         env:
-          IMAGE: ${{ secrets.DOCKERHUB_USER }}/app:${{ github.sha }}
+          DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
         run: |
+          export IMAGE="$DOCKERHUB_USER/app:$GITHUB_SHA"
           docker compose pull
           docker compose up -d
           sleep 5
